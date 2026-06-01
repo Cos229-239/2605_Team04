@@ -1,9 +1,9 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Template Admin Prototype</title>
+  <title>TeamLuke 2605 - Roster Editor Prototype</title>
   <style>
     :root {
       --bg: #0b1220;
@@ -187,16 +187,16 @@
 <body>
   <main>
     <section class="hero">
-      <h1>Roster Editor V2 Prototype</h1>
-      <p>This is a standalone test page for class setup. It edits a roster-like JSON model in the browser, supports team changes over time, and exports a `V2` roster shape we can later wire into SupaTewl and the reporting pipeline.</p>
+      <h1>TeamLuke 2605 Roster Editor</h1>
+      <p>A standalone class-project prototype for editing team roster data in the browser, testing student/team setup flows, and exporting a V2 roster shape for future automation and reporting.</p>
       <div class="top-actions">
         <div class="button-row">
-          <button class="btn-primary" id="load-sample">Load sample 2604</button>
+          <button class="btn-primary" id="load-sample">Load sample roster</button>
           <button class="btn-secondary" id="add-team">Add team</button>
           <button class="btn-secondary" id="add-unassigned">Add unassigned student</button>
           <button class="btn-secondary" id="download-json">Download V2 roster JSON</button>
         </div>
-        <div class="status-chip" id="save-state">Prototype only · not wired to repo writes</div>
+        <div class="status-chip" id="save-state">Static prototype - exports local JSON only</div>
       </div>
     </section>
 
@@ -216,8 +216,8 @@
           </div>
         </div>
         <div class="team-list" id="team-root"></div>
-        <p class="note">Use this to test whether roster edits feel better on a page than in shell prompts. The export on the right is the candidate `V2` roster file we can later feed into class setup and reporting.</p>
-        <div class="footer-tag">v0.1.0 · Roster Editor Prototype</div>
+        <p class="note">Use this to test roster edits before wiring anything into automation. The export on the right is the candidate V2 roster file for class setup and reporting.</p>
+        <div class="footer-tag">TeamLuke 2605 - v0.1.0 - Roster Editor Prototype</div>
       </section>
 
       <aside class="panel">
