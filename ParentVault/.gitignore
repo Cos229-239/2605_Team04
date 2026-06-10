@@ -1,0 +1,25 @@
+node_modules/
+dist/
+.expo/
+.env
+.env.*
+!.env.example
+.DS_Store
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Local Android build helpers/artifacts. The portable JDK and screenshots are
+# machine-specific and should not be committed.
+tools/
+parentvault-*.png
+parentvault-*.xml
+
+# Local rollback snapshots can contain private workspace/memory context.
+snapshots/
+
+# Local browser-test seed data can contain private child/family details.
+apps/mobile/public/dev-seed/
+
+# Generated PowerPoint internals are rebuildable; keep the .pptx artifact instead.
+exports/**/pptx-src/

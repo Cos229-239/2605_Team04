@@ -1,0 +1,30 @@
+{
+  "expo": {
+    "name": "ParentVault",
+    "slug": "parentvault",
+    "version": "0.1.0",
+    "orientation": "portrait",
+    "scheme": "parentvault",
+    "userInterfaceStyle": "automatic",
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "app.parentvault.mobile",
+      "infoPlist": {
+        "NSFaceIDUsageDescription": "ParentVault can use Face ID to protect child profile and journal data.",
+        "NSCameraUsageDescription": "ParentVault uses the camera to import flyers, decrees, calendars, and journal photos.",
+        "NSPhotoLibraryUsageDescription": "ParentVault lets you attach photos and screenshots to journal entries."
+      }
+    },
+    "android": {
+      "package": "app.parentvault.mobile",
+      "allowBackup": false,
+      "permissions": ["CAMERA", "READ_MEDIA_IMAGES", "POST_NOTIFICATIONS"],
+      "blockedPermissions": [
+        "android.permission.RECORD_AUDIO",
+        "android.permission.SYSTEM_ALERT_WINDOW",
+        "android.permission.WRITE_EXTERNAL_STORAGE"
+      ]
+    },
+    "plugins": ["expo-notifications", "expo-image-picker", "expo-document-picker"]
+  }
+}
