@@ -8,7 +8,7 @@
  */
 
 import { useMemo, useState } from 'react';
-import { ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
+import { Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
 import type { JournalEntryType } from '@parentvault/shared';
 import { Card } from '../components/Card';
 import { PrimaryButton } from '../components/PrimaryButton';
@@ -27,7 +27,42 @@ const quickLogTypes: { label: string; type: JournalEntryType; template: string }
   { label: 'Medical', type: 'medical', template: 'Medical note' }
 ];
 
+const quickLogMeta: Record<JournalEntryType, { color: string; soft: string; text: string }> = {
+  general: { color: '#64748b', soft: '#f1f5f9', text: '#334155' },
+  behavior: { color: '#10b981', soft: '#d1fae5', text: '#065f46' },
+  medication: { color: '#f97316', soft: '#ffedd5', text: '#9a3412' },
+  expense: { color: '#14b8a6', soft: '#ccfbf1', text: '#115e59' },
+  custody: { color: '#8b5cf6', soft: '#ede9fe', text: '#4c1d95' },
+  school: { color: '#2563eb', soft: '#dbeafe', text: '#1e3a8a' },
+  medical: { color: '#ef4444', soft: '#fee2e2', text: '#991b1b' },
+  communication: { color: '#0ea5e9', soft: '#e0f2fe', text: '#075985' },
+  appointment: { color: '#ef4444', soft: '#fee2e2', text: '#991b1b' },
+  other: { color: '#64748b', soft: '#f1f5f9', text: '#334155' }
+};
+
+const actionMeta = {
+  today: { color: '#8b5cf6', soft: '#ede9fe', text: '#4c1d95' },
+  week: { color: '#2563eb', soft: '#dbeafe', text: '#1e3a8a' },
+  questions: { color: '#ef4444', soft: '#fee2e2', text: '#991b1b' },
+  share: { color: '#10b981', soft: '#d1fae5', text: '#065f46' },
+  export: { color: '#f97316', soft: '#ffedd5', text: '#9a3412' }
+};
+
 const formatWhen = (iso: string) => new Date(iso).toLocaleString(undefined, { weekday: 'short', month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' });
+
+function ColorActionButton({ label, active = false, meta, onPress }: { label: string; active?: boolean; meta: { color: string; soft: string; text: string }; onPress: () => void }) {
+  return (
+    <Pressable
+      accessibilityRole="button"
+      accessibilityState={{ selected: active }}
+      onPress={onPress}
+      style={({ pressed }) => [stylesStatic.colorButton, { backgroundColor: active ? meta.color : meta.soft, borderColor: meta.color, opacity: pressed ? 0.86 : 1 }]}
+    >
+      <View style={[stylesStatic.colorButtonDot, { backgroundColor: active ? '#ffffff' : meta.color }]} />
+      <Text style={[stylesStatic.colorButtonText, { color: active ? '#ffffff' : meta.text }]}>{label}</Text>
+    </Pressable>
+  );
+}
 
 export function TodayScreen() {
   const theme = useTheme();
@@ -125,7 +160,7 @@ export function TodayScreen() {
       <Card>
         <Text style={styles.sectionTitle}>Quick Log</Text>
         <Text style={styles.help}>Capture a useful record faster than texting yourself.</Text>
-        <View style={styles.typeGrid}>{quickLogTypes.map(type => <PrimaryButton key={type.type} tone={quickType === type.type ? 'primary' : 'quiet'} onPress={() => setQuickType(type.type)}>{type.label}</PrimaryButton>)}</View>
+        <View style={styles.typeGrid}>{quickLogTypes.map(type => <ColorActionButton key={type.type} label={type.label} active={quickType === type.type} meta={quickLogMeta[type.type]} onPress={() => setQuickType(type.type)} />)}</View>
         <TextInput value={quickText} onChangeText={setQuickText} placeholder="What happened? Keep it factual." placeholderTextColor={theme.subtle} style={styles.input} multiline />
         <PrimaryButton onPress={saveQuickLog}>Save Quick Log</PrimaryButton>
         {status ? <Text style={styles.status}>{status}</Text> : null}
@@ -134,9 +169,9 @@ export function TodayScreen() {
       <Card>
         <Text style={styles.sectionTitle}>Ask Nanny</Text>
         <View style={styles.actionGrid}>
-          <PrimaryButton tone="quiet" onPress={() => runAiPrompt('What do I need to know today?')}>What do I need today?</PrimaryButton>
-          <PrimaryButton tone="quiet" onPress={() => runAiPrompt('Summarize this week for my child.')}>Summarize this week</PrimaryButton>
-          <PrimaryButton tone="quiet" onPress={() => runAiPrompt('What should I ask the teacher or doctor?')}>Questions to ask</PrimaryButton>
+          <ColorActionButton label="What do I need today?" meta={actionMeta.today} onPress={() => runAiPrompt('What do I need to know today?')} />
+          <ColorActionButton label="Summarize this week" meta={actionMeta.week} onPress={() => runAiPrompt('Summarize this week for my child.')} />
+          <ColorActionButton label="Questions to ask" meta={actionMeta.questions} onPress={() => runAiPrompt('What should I ask the teacher or doctor?')} />
         </View>
         {aiPreview ? <Text style={styles.preview}>{aiPreview}</Text> : null}
       </Card>
@@ -144,14 +179,14 @@ export function TodayScreen() {
       <Card>
         <Text style={styles.sectionTitle}>Share specific info</Text>
         <Text style={styles.help}>Start safe: share selected facts only, not the whole vault.</Text>
-        <PrimaryButton onPress={previewShare}>Preview caregiver share</PrimaryButton>
+        <ColorActionButton label="Preview caregiver share" meta={actionMeta.share} onPress={previewShare} />
         {sharePreview ? <Text style={styles.preview}>{sharePreview}</Text> : null}
       </Card>
 
       <Card>
         <Text style={styles.sectionTitle}>Court/export readiness</Text>
         <Text style={styles.help}>Journal exports should stay factual, ordered, timestamped, and attachment-aware.</Text>
-        <PrimaryButton onPress={previewCourtExport}>Preview export package</PrimaryButton>
+        <ColorActionButton label="Preview export package" meta={actionMeta.export} onPress={previewCourtExport} />
         {exportPreview ? <Text style={styles.preview}>{exportPreview}</Text> : null}
       </Card>
     </ScrollView>
@@ -177,4 +212,21 @@ const createStyles = (theme: ReturnType<typeof useTheme>) => StyleSheet.create({
   input: { minHeight: 96, borderRadius: 16, borderWidth: 1, borderColor: theme.inputBorder, padding: 12, backgroundColor: theme.input, color: theme.text, marginTop: 8 },
   status: { color: theme.primary, fontWeight: '800', marginTop: 8 },
   preview: { color: theme.text, backgroundColor: theme.input, borderWidth: 1, borderColor: theme.border, borderRadius: 14, padding: 12, lineHeight: 20, marginTop: 10 }
+});
+
+const stylesStatic = StyleSheet.create({
+  colorButton: {
+    minHeight: 48,
+    borderRadius: 999,
+    borderWidth: 2,
+    paddingVertical: 12,
+    paddingHorizontal: 14,
+    alignItems: 'center',
+    justifyContent: 'center',
+    flexDirection: 'row',
+    gap: 8,
+    marginTop: 8
+  },
+  colorButtonDot: { width: 10, height: 10, borderRadius: 999 },
+  colorButtonText: { fontWeight: '900', fontSize: 15, textAlign: 'center' }
 });
